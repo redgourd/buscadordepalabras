@@ -1,14 +1,14 @@
 function separar() {
-    //Recogemos la palabra y convertimos tildes en letras normales
+    // Recogemos la palabra y convertimos tildes en letras normales
     palabra = document.getElementById("word").value;
-    palabra = palabra.replace('ñ', '\001');
+    palabra = palabra.replace('ñ', '\0x1');
     palabra = palabra.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    palabra = palabra.replace('\001', 'ñ');
+    palabra = palabra.replace('\0x1', 'ñ');
 
-    //Convertimos la palabra en un string de letras únicas
+    // Convertimos la palabra en un string de letras únicas
     letras = palabra.split("");
 
-    //Si es una palabra, buscamos el total de cada letra y ejecutamos buscarPalabras()
+    // Si es una palabra, buscamos el total de cada letra y ejecutamos buscarPalabras()
     if (palabra.match("^[ña-zÑA-Z]*$")) {
         letrasTotal = [];
         letras.forEach(letra => {
@@ -23,16 +23,17 @@ function separar() {
     }
 }
 
-function buscarPalabras(palabra, letras) {
+// Lee las palabras del documento, comprueba las letras y guarda las que coinciden para mostrarlas
+function buscarPalabras(letras) {
     palabrasExistentes = [];
     fetch("palabras.txt")
         .then((res) => res.text())
         .then((text) => {
             palabras = text.split("\n");
             palabras.forEach(elemento => {
-                elemento = elemento.replace('ñ', '\001');
+                elemento = elemento.replace('ñ', '\0x1');
                 elemento = elemento.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                elemento = elemento.replace('\001', 'ñ');
+                elemento = elemento.replace('\0x1', 'ñ');
                 if (compararPalabra(letras, elemento) && elemento.length > 2 && !palabrasExistentes.includes(elemento)) {
                     palabrasExistentes.push(elemento);
                 }
@@ -45,6 +46,7 @@ function buscarPalabras(palabra, letras) {
         .catch((e) => console.error(e));
 }
 
+// Comprueba si las letras de la palabra espeficífica del documento coinciden con las del input
 function compararPalabra(letras, palabra) {
     palabra = palabra.split("");
     for (var i = 0; i < letras.length; i++) {
@@ -59,6 +61,7 @@ function compararPalabra(letras, palabra) {
 
 var firstDone = false;
 
+// Muestra las palabras encontradas en pantalla
 function mostrar(palabras) {
     currentLength = palabras[0].length;
 
